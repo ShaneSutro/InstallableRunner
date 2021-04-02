@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Non-Python
+node_modules/
+
+# Cached Repositories
+cached/
