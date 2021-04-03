@@ -3,15 +3,18 @@ import sys
 import subprocess
 
 def clone(repo):
-  curdir = os.getcwd()
   repoName = repo['name']
   repoURL = repo['url']
   print(os.path.dirname(__file__))
   if not repoExists(repoName):
     os.system(f'git clone {repoURL} ./cached/{repoName}')
-  elif not useCached(repo):
-    os.system(f'rm -rf ./cached/{repoName}')
-    os.system(f'git clone {repoURL} ./cached/{repoName}')
+  else:
+    try:
+      updateCache(repoName)
+    except Exception as e:
+      print(e)
+      os.system(f'rm -rf ./cached/{repoName}')
+      os.system(f'git clone {repoURL} ./cached/{repoName}')
 
   executeFile(repoName)
 
@@ -22,17 +25,15 @@ def repoExists(name):
   except FileNotFoundError:
     return False
 
-def useCached(repo):
-  repoName = repo['name']
-  url = repo['url']
-  os.chdir(os.path.dirname(__file__) + f'/cached/{repoName}')  # Go to root of repository
+def updateCache(name):
+  os.chdir(os.path.dirname(__file__) + f'/cached/{name}')  # Go to root of repository
+  os.system('git fetch')
   currentHash = subprocess.check_output('git rev-parse HEAD', shell=True).decode('UTF-8').strip()
-  latestHash = subprocess.check_output(f'git ls-remote {url} HEAD', shell=True).decode('UTF-8').split('\t')[0].strip()
-  print(latestHash)
-  if latestHash != currentHash:
-    return False
-  else:
-    return True
+  remoteHash = subprocess.check_output('git log origin -1', shell=True).decode('UTF-8').split('\n')[0].split(' ')[1]
+  if currentHash != remoteHash:
+    os.system('git merge')
+
+  os.chdir(os.path.dirname(__file__)) #Switch back to main directory
 
 def executeFile(name):
   os.chdir(f'./cached/{name}')
