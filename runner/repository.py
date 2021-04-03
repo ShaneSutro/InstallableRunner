@@ -1,8 +1,9 @@
 import os
 import sys
 import subprocess
+import json
 
-def clone(repo):
+def run(repo):
   repoName = repo['name']
   repoURL = repo['url']
   print(os.path.dirname(__file__))
@@ -16,11 +17,12 @@ def clone(repo):
       os.system(f'rm -rf ./cached/{repoName}')
       os.system(f'git clone {repoURL} ./cached/{repoName}')
 
+  getFields(repo)
   executeFile(repoName)
 
 def repoExists(name):
   try:
-    with open(f'./cached/{name}/__init__.py'):
+    with open(f'../cached/{name}/__init__.py'):
       return True
   except FileNotFoundError:
     return False
@@ -41,5 +43,15 @@ def executeFile(name):
   execfile(activatefile, dict(__file__=activatefile))
   os.system('python __init__.py')
 
+def getFields(repo):
+  name = repo['name']
+  try:
+    with open(f'./cached/{name}/vbconfig.json') as config:
+      config = json.loads(config.read())
+      print(config)
+      return True
+  except FileNotFoundError:
+    return False
+
 if __name__ == '__main__':
-  clone({'name':'TestRepo', 'url': 'https://github.com/SonicRift/VBTEST'})
+  run({'name':'TestRepo', 'url': 'https://github.com/SonicRift/VBTEST'})
