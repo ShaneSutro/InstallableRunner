@@ -9,7 +9,9 @@ def register(repo):
   repoUserName = urlElements[len(urlElements) - 2:len(urlElements) - 1][0]
   repoName = urlElements[len(urlElements) - 1:len(urlElements)][0]
 
-  db.client.insert_one({'name': f'{repoUserName}/{repoName}'})
+  db.installables.insert_one({'name': f'{repoUserName}/{repoName}'})
+
+  db.installables.find_one_and_update({'name': f'{repoUserName}/{repoName}'}, {'$set': {'id':23}})
 
   combined = (repoUserName + repoName).encode()
 
