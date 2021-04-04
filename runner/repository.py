@@ -45,9 +45,19 @@ def executeFile(name):
   os.chdir(f'./cached/{name}')
   sys.path.append(os.getcwd())
   activatefile = './venv/bin/activate_this.py'
-  execfile(activatefile, dict(__file__=activatefile))
-  import run
-  runValue = run.main({'user': 'user'}, {'dev': 'dev'})
+  try:
+    execfile(activatefile, dict(__file__=activatefile))
+  except FileNotFoundError:
+    message = 'The virtualenv is not configured correctly.'
+    print(message)
+    return message
+  try:
+    import run
+    runValue = run.main({'user': 'user'}, {'dev': 'dev'})
+  except (ModuleNotFoundError, AttributeError, TypeError):
+    message = 'The script should be named "run.py" and should have a function called "main," accepting 2 arguments.'
+    print(message)
+    return message
   print(runValue)
 
 def getFields(repo):
