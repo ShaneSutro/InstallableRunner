@@ -13,6 +13,7 @@ def run(repo):
     try:
       updateCache(repoName)
     except Exception as e:
+      print(os.getcwd())
       print(e)
       os.system(f'rm -rf ./cached/{repoName}')
       os.system(f'git clone {repoURL} ./cached/{repoName}')
@@ -22,26 +23,32 @@ def run(repo):
 
 def repoExists(name):
   try:
-    with open(f'../cached/{name}/__init__.py'):
+    with open(f'./cached/{name}/run.py'):
       return True
   except FileNotFoundError:
     return False
 
 def updateCache(name):
-  os.chdir(os.path.dirname(__file__) + f'/cached/{name}')  # Go to root of repository
+  os.chdir(f'./cached/{name}')  # Go to root of repository
+  print(os.getcwd())
   os.system('git fetch')
   currentHash = subprocess.check_output('git rev-parse HEAD', shell=True).decode('UTF-8').strip()
   remoteHash = subprocess.check_output('git log origin -1', shell=True).decode('UTF-8').split('\n')[0].split(' ')[1]
   if currentHash != remoteHash:
-    os.system('git merge')
+    os.system('git merge origin')
 
-  os.chdir(os.path.dirname(__file__)) #Switch back to main directory
+  os.chdir(os.path.dirname(__file__))  #Switch back to main directory
+  os.chdir('..')
+  print(os.getcwd())
 
 def executeFile(name):
   os.chdir(f'./cached/{name}')
+  sys.path.append(os.getcwd())
   activatefile = './venv/bin/activate_this.py'
   execfile(activatefile, dict(__file__=activatefile))
-  os.system('python __init__.py')
+  import run
+  runValue = run.main({'user': 'user'}, {'dev': 'dev'})
+  print(runValue)
 
 def getFields(repo):
   name = repo['name']
