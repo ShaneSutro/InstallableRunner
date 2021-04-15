@@ -24,6 +24,9 @@
     "@babel/core": "^7.13.15",
     "@babel/preset-env": "^7.13.15",
     "@babel/preset-react": "^7.13.13",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/pickers": "^3.3.10",
     "@webpack-cli/generators": "^2.0.0",
     "babel": "^6.23.0",
     "babel-loader": "^8.2.2",
@@ -36,7 +39,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.3",
+    "@vestaboard/installables": "^1.0.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "helmet": "^4.4.1",
