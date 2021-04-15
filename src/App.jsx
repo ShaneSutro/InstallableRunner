@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Button } from '@vestaboard/installables'
+import { Button, Title, SubTitle, Small, Toast } from '@vestaboard/installables'
 import './style.css'
 
 class App extends React.Component {
@@ -14,8 +14,11 @@ class App extends React.Component {
   render() {
     return (
       <>
-        <h1>Configured Correctly Still</h1>
+        <Title>Installable</Title>
+        <SubTitle>A Runner</SubTitle>
         <Button buttonType="default">A Button</Button>
+        <Toast message="Success!" severity="success" open="true"></Toast>
+        <Small>Powered by Shane Sutro</Small>
       </>
     )
   }
