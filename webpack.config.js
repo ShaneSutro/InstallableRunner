@@ -14,7 +14,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html',
+            template: 'template.html',
         }),
 
         // Add your plugins here
@@ -23,7 +23,8 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\\.(js|jsx)$/,
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
                 loader: 'babel-loader',
             },
             {

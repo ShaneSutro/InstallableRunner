@@ -11,7 +11,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <h1>Configured Correctly</h1>
+      <h1>Configured Correctly Still</h1>
     )
   }
 }
