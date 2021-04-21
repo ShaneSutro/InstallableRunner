@@ -10,18 +10,21 @@ from db import client as db  # noqa: E402
 
 def scheduleAll():
     now = datetime.datetime.now()
-    timeRangeStart = now + datetime.timedelta(hours=1) - datetime.timedelta(minutes=1)
+    timeRangeStart = now + datetime.timedelta(hours=1)
     timeRangeEnd = now + datetime.timedelta(hours=2)
     allInstallations = db.installations.find({})
     for inst in allInstallations:
         repo = db.installables.find_one({"name": inst["installable"]})
         installation = {"name": inst["installable"], "url": repo["url"]}
-        jobs = schedulers[inst["frequency"]](inst, timeRangeStart, timeRangeEnd)
+        # Function call returns an list of dicts where each one has a
+        # {'time': datetime object and a 'job': job ID string}
+        # If none fall within the time it is already scheduled,
+        # it will be skipped.
+        jobs = schedulers[inst["frequency"]](inst, timeRangeStart, timeRangeEnd, now)
         if jobs:
+            print("Scheduling", len(jobs), "job(s)")
             for job in jobs:
-              queue(scheduleTime, installation, "VBTEST 13:45")
-        # XXX: Should return a date-time object for when this should be
-        # XXX: scheduled or False if it should not be scheduled?
+                queue(job['time'], installation, job['job'])
 
 
 schedulers = {

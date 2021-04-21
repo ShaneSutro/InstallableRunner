@@ -10,5 +10,13 @@ q = queueWorker.queue
 
 def queue(queueTime, installable, jobID):
     # NOTE: Installable should be a dict with the name and URL
-    result = q.enqueue_at(queueTime, repository.run(installable), jobID)
+    def partial(f, *args):
+        def wrapped(*args2):
+            return f(*args, *args2)
+        return wrapped
+    perform = partial(repository.run, installable)
+
+    result = q.enqueue_at(queueTime, perform, job_id=jobID)
     print(result)
+    print(result.id)
+
