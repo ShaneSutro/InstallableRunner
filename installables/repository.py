@@ -71,5 +71,5 @@ def getFields(repo):
     return False
 
 if __name__ == '__main__':
-  arg = json.loads(sys.argv[1])
-  run(arg)
+  # arg = json.loads(sys.argv[1]) # Get repo from command line argument
+  run({'name':'VBTEST', 'url': 'https://github.com/SonicRift/VBTEST'})
