@@ -8,7 +8,7 @@ import repository  # noqa: E402
 q = queueWorker.queue
 
 
-def queue(queueTime, installable, jobID):
+def queueJob(queueTime, installable, jobID):
     # NOTE: Installable should be a dict with the name and URL
     def partial(f, *args):
         def wrapped(*args2):

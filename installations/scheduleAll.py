@@ -1,7 +1,8 @@
 import os
 import sys
 import timefrequencies as tf
-from taskQueue import queue
+from taskQueue import queueJob
+from queueWorker import queue
 import datetime
 
 sys.path.append(os.getcwd() + "/database")
@@ -13,6 +14,7 @@ def scheduleAll():
     timeRangeStart = now + datetime.timedelta(hours=1)
     timeRangeEnd = now + datetime.timedelta(hours=2)
     allInstallations = db.installations.find({})
+    registry = queue.scheduled_job_registry
     for inst in allInstallations:
         repo = db.installables.find_one({"name": inst["installable"]})
         installation = {"name": inst["installable"], "url": repo["url"]}
@@ -20,11 +22,17 @@ def scheduleAll():
         # {'time': datetime object and a 'job': job ID string}
         # If none fall within the time it is already scheduled,
         # it will be skipped.
-        jobs = schedulers[inst["frequency"]](inst, timeRangeStart, timeRangeEnd, now)
+        jobs = schedulers[inst["frequency"]](
+                inst,
+                timeRangeStart,
+                timeRangeEnd,
+                now,
+                registry
+            )
         if jobs:
             print("Scheduling", len(jobs), "job(s)")
             for job in jobs:
-                queue(job['time'], installation, job['job'])
+                queueJob(job['time'], installation, job['job'])
 
 
 schedulers = {
